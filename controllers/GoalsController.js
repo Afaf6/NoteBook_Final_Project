@@ -1,30 +1,38 @@
 const {models} = require("mongoose");
 const Goals = require("../models/Goals");
+const goalValidSchema = require("./validation/goalsValid");
 
 const createGoals = async (req, res) => {
     try {
-        const {title, targetValue, currentValue, deadline} = req.body;
-
-        if (!title || !targetValue || !currentValue) {
+        const {error} = goalValidSchema.validate(req.body, {abortEarly: false});
+         if (error) {
             return res.status(400).json({
-                msg: "You Need To Add Your Goal"
+                msg: error.details.map(d => d.message)
             });
-        }
+        };
+
+        
+
+        // if (!title || !targetValue || !currentValue) {
+        //     return res.status(400).json({
+        //         msg: "You Need To Add Your Goal"
+        //     });
+        // }
+        
         const goal = await Goals.create({
-            title,
-            currentValue,
-            targetValue,
-            deadline,
+            ...req.body,
             user: req.auth._id,
         });
 
         res.status(201).json({
-            msg: "You Create Your Goal"
+            msg: "Your Goal Created Successfully",
+            goal
         });
+
     } catch (error) {
         res.status(500).json({
-            msg: "Error"
-        })
+            msg: "Error Creating Goal"
+        });
     }
 }
 

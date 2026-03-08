@@ -1,17 +1,26 @@
 const Auth = require("../models/Auth");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const {authValidSchema} = require("./validation/authValid");
 
 
 const registerAuth = async(req, res) => {
+    
     try {
-        const {userName, email, password} =req.body;
-
-        if (!userName || !email || !password) {
+        const { error } = authValidSchema.validate(req.body, {abortEarly: false});
+        if (error) {
             return res.status(400).json({
-                msg: "Missing Data"
+                msg: error.details.map(d => d.message)
             });
         };
+
+        // if (!userName || !email || !password) {
+        //     return res.status(400).json({
+        //         msg: "Missing Data"
+        //     });
+        // };
+        
+        const {userName, email, password} =req.body;
 
         const existUser = await Auth.findOne({email});
 

@@ -4,15 +4,16 @@ const incomeSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref:"Auth",
-        require: true
+        required: true
     },
     amount: {
         type: Number,
-        require: true
+        required: true
     },
     month: {
         type: String,
-        require: true
+        required: true,
+        enum: ["January","February","March","April","May","June","July","August","September","October","November","December"]
     }
 },{timestamps: true})
 

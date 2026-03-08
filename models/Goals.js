@@ -3,31 +3,32 @@ const mongoose = require("mongoose");
 const GoalSchema =new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
-        res:"Auth",
-        require: true,
+        ref:"Auth",
+        required: true,
     },
 
     title: {
         type: String,
-        require: true,
+        required: true,
     },
     description: String,
     
     targetValue:{
         type: Number,
-        require: true,
+        required: true,
     },
     
     currentValue: {
         type: Number,
-        require:true,
+        required:true,
+        default: 0
     },
     
     unit: String,
 
     priority: {
         type: Number,
-        default: 0
+        
     },
 
     deadline: Date,
