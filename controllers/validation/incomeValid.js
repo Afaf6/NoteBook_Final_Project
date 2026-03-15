@@ -1,4 +1,5 @@
 const Joi = require("joi");
+const { min } = require("./authValid");
 
 const incomeVaildSchema = Joi.object({
 

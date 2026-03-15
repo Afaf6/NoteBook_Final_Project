@@ -1,7 +1,7 @@
 const Joi = require("joi");
 const { min } = require("./authValid");
 
-const goalValidSchema = joi.object({
+const goalValidSchema = Joi.object({
     title: Joi.string()
     .min(3)
     .max(100)

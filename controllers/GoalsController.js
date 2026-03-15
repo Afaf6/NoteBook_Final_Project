@@ -101,7 +101,7 @@ const getAllGoals = async (req, res) => {
         });
 
     } catch (error) {
-        res.status(500).json({msg: "Can't delete the goal"})
+        res.status(500).json({msg: error.msg})
     }
 };
 

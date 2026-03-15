@@ -26,10 +26,13 @@ app.use("/api/goal", GoalsRoute);
 const IncomeRoute = require("./routes/IncomeRoute");
 app.use("/api/income", IncomeRoute);
 
+const HabitRouter = require("./routes/HabitRoute");
+app.use("/api/habit", HabitRouter);
+
 
 const port = process.env.PORT || 5000;
 
 app.listen(port, () => {
     console.log(`Server Is Running ${port}`);
     
-})
+});

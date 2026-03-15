@@ -1,4 +1,4 @@
-const { models } = require("mongoose");
+
 const Income = require("../models/Income");
 const incomeVaildSchema = require("./validation/incomeValid");
 
@@ -6,18 +6,13 @@ const addIncome = async(req, res) => {
     try {
         
           const {error} = incomeVaildSchema.validate(req.body, {abortEarly: false});
+
          if (error) {
             return res.status(400).json({
-                msg: error.details.map(d => d.message)
+                msg: error.details.map((err) => err.message)
             });
         };
-        // if(!amount || !month) {
-        //     return res.status(400).json({
-        //         msg: "You Should Enter yout Income and Month"
-        //     });
-        // }
-        
-        //const {amount, month} = req.body;
+
 
         const income = await Income.create({
             ...req.body,
@@ -30,6 +25,62 @@ const addIncome = async(req, res) => {
         });
     } catch (error) {
         res.status(500).json({ msg: "Error adding income" });
+    }
+};
+
+const updateIncome = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const income = await Income.findOne({
+            _id: id,
+            user: req.auth._id,
+        });
+
+        if (!income){
+            return res.status(404).json({
+                msg: "Income not found"});
+        }
+
+        Object.assign(income, req.body);
+
+        await income.save();
+
+        res.status(200).json({
+            msg: "Income updates",
+            income,
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            msg: error.msg
+        })
+    }
+};
+
+const deleteIncome = async (req, res) => {
+    try {
+        const {id} = req.params;
+
+        const income = await Income.findByIdAndDelete({
+            _id: id,
+            user: req.auth._id,
+        });
+
+        if (!income) {
+            return res.status(404).json({
+                msg: "income not found"
+            });
+        }
+
+        res.status(200).json({
+            msg: "income Delete"
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            msg: error.msg
+        });
     }
 };
 
@@ -60,5 +111,7 @@ const getTotalIncome = async(req,res) => {
 
 module.exports = {
     addIncome,
+    updateIncome,
+    deleteIncome,
     getTotalIncome
 }

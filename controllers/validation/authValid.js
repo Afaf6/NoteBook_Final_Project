@@ -1,10 +1,11 @@
-const joi = require("joi");
+const Joi = require("joi");
 
-const authValidSchema = joi.object({
+const authValidSchema = Joi.object({
+
     userName: Joi.string()
-    .min(3).
-    max(20).
-    required(),
+    .min(3)
+    .max(20)
+    .required(),
 
     email: Joi.string()
     .email()
