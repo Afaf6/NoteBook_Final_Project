@@ -1,7 +1,7 @@
 const {models} = require("mongoose");
 const Habits = require ("../models/Habits");
 const habitValidSchema = require("./validation/habitValid");
-const Habit = require("../models/Habits");
+
 const {
     calculateStreak,
     successRate
