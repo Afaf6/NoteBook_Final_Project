@@ -14,7 +14,7 @@ router.use(protect);
 router.post("/create",createHabits);
 router.get("/get",getHabit);
 router.post("/complete/:id",markComplete);
-router.delete("/delete",deleteHabit);
+router.delete("/delete/:id",deleteHabit);
 
 
 module.exports = router;

@@ -98,8 +98,11 @@ const getTotalIncome = async(req,res) => {
         ]);
         const total = result.length > 0 ? result[0].total : 0;
 
+        const incomes = await Income.find({ user: req.auth._id }).sort({ createdAt: -1 });
+        
         res.status(200).json({
-            totalIncome: total
+            totalIncome: total,
+            incomes: incomes
         });
 
     } catch (error) {

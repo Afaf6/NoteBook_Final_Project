@@ -1,5 +1,4 @@
 const Joi = require("joi");
-const { min } = require("./authValid");
 
 const goalValidSchema = Joi.object({
     title: Joi.string()

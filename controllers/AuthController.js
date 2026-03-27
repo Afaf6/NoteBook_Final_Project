@@ -47,7 +47,7 @@ const registerAuth = async(req, res) => {
     } catch (error) {
     console.error(error);
     return res.status(500).json({
-        msg: "Failed to Create Account"
+        msg: error.message
     });
 }
 };

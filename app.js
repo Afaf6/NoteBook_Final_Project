@@ -6,6 +6,8 @@ const mongoose = require ("mongoose");
 const app = express();
 app.use(express.json());
 
+require("./corn/jobs");
+
 async function connection_DB() {
     try {
         await mongoose.connect(process.env.DB_URL)
@@ -16,6 +18,9 @@ async function connection_DB() {
 }
 connection_DB();
 
+const cors = require("cors");
+app.use(cors({ origin: "*" }));  // front API
+app.use(express.json());
 
 const AuthRoute = require("./routes/AuthRoute");
 app.use("/api", AuthRoute);
@@ -26,8 +31,21 @@ app.use("/api/goal", GoalsRoute);
 const IncomeRoute = require("./routes/IncomeRoute");
 app.use("/api/income", IncomeRoute);
 
-const HabitRouter = require("./routes/HabitRoute");
-app.use("/api/habit", HabitRouter);
+const HabitRoute = require("./routes/HabitRoute");
+app.use("/api/habit", HabitRoute);
+
+const expenseRoute = require("./routes/ExpenseRoute");
+app.use("/api/expenses", expenseRoute);
+
+const SubscripRoute = require("./routes/SubscripRoute");
+app.use("/api/subscrip", SubscripRoute);
+
+const DashboardRoute = require("./routes/DashboardRoute");
+app.use("/api/dashboard", DashboardRoute);
+
+const NotificationRoute = require("./routes/NotificationRoute");
+app.use("/api/notifications", NotificationRoute);
+
 
 
 const port = process.env.PORT || 5000;

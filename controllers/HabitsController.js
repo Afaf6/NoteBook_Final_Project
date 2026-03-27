@@ -1,7 +1,7 @@
 const {models} = require("mongoose");
-const Habits = require ("../models/Habits");
+const Habit = require ("../models/Habits");
 const habitValidSchema = require("./validation/habitValid");
-const Habit = require("../models/Habits");
+
 const {
     calculateStreak,
     successRate
@@ -13,11 +13,11 @@ const createHabits = async(req, res) => {
 
         if (error){
             return res.status(400).json({
-                msg: error.details.map(d => d.msg)
+                msg: error.details.map(d => d.message)
             });
         };
 
-        const habit = await Habits.create({
+        const habit = await Habit.create({
             ...req.body,
             user: req.auth._id,
         });
@@ -35,13 +35,14 @@ const createHabits = async(req, res) => {
 
 const getHabit = async(req, res) => {
     try {
-        const streak = calculateStreak(habit);
-        const precent = successRate(habit);
-    
-
-        const habits = await Habits.find({
+         console.log("User:", req.auth);
+        const habits = await Habit.find({
             user: req.auth._id
         });
+        
+        const streak = calculateStreak(habits);
+        const precent = successRate(habits);
+
         res.status(200).json({
             msg: "Your HAbit",
             habits,
@@ -49,9 +50,11 @@ const getHabit = async(req, res) => {
             precent
             
         });
+
+
     } catch (error) {
         res.status(500).json({
-            msg: error.msg
+            msg: error.message
         });
     }
 };
