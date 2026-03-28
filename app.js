@@ -6,7 +6,7 @@ const mongoose = require ("mongoose");
 const app = express();
 app.use(express.json());
 
-require("./corn/jobs");
+require("./cron/jobs");
 
 async function connection_DB() {
     try {
