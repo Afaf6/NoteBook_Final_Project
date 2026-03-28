@@ -12,6 +12,7 @@ const SubscripValidSchema = Joi.object({
     cost: Joi.number()
     .required(),
 
+
     billingCycle: Joi.string()
     .valid("monthly", "yearly")
     .default("monthly"),
@@ -21,7 +22,7 @@ const SubscripValidSchema = Joi.object({
 
     startDate: Joi.date()
     .default(Date.now),
-
+    
     lastUsed:Joi.date()
 })
 
