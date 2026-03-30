@@ -1,7 +1,9 @@
-const {models} = require("mongoose");
+
 const Subscription = require("../models/Subscription");
 const SubscripValidSchema = require("./validation/SubscripValid");
 const { analysisSub } = require("../utils/SubscripUtils");
+const Notification = require("../models/Notification");
+
 
 const addSubscrip = async (req, res) => {
     try {
@@ -17,6 +19,13 @@ const addSubscrip = async (req, res) => {
             ...req.body,
             user: req.auth._id
         });
+        await Expense.create({
+            user: req.auth._id,
+            title: subscrip.name,
+            amount: subscrip.cost,
+            category: "subscription",
+            date: new Date()
+        });
         res.status(201).json({
             msg: "Add Subscrip",
             data: subscrip
@@ -26,13 +35,13 @@ const addSubscrip = async (req, res) => {
             msg: "Error adding Subscrip"
         })
     }
-}
+};
 
 const updateSubscrip = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const subscrip = await Subscription.findById({
+        const subscrip = await Subscription.findOne({
             _id: id,
             user: req.auth._id
         });
@@ -42,7 +51,8 @@ const updateSubscrip = async (req, res) => {
                 msg: "Subscription not found"
             });
         };
-        Object.assign(income, req.body);
+
+        Object.assign(subscrip, req.body);
 
         await subscrip.save();
 
@@ -73,6 +83,12 @@ const deleteSubscrip = async (req, res) => {
                 msg: "Subscription not found"
             });
         };
+
+        await Notification.deleteMany({
+            user: req.auth._id,
+            type: "subscription",
+            message: { $regex: subscrip.name, $options: "i" }
+        });
 
         res.status(201).json({
             msg: "update successfuly",

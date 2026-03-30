@@ -7,7 +7,7 @@ const { checkGoalDeadlines, checkSubscriptionIssues } = require("../utils/Notifi
 cron.schedule("0 9 * * *", async () => {
   console.log("Running daily notifications check...");
   try {
-    const goals = await Goal.find();
+    const goals = await Goals.find();
     await checkGoalDeadlines(goals);
 
     const subs = await Subscription.find();

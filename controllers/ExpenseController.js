@@ -3,14 +3,18 @@ const ExpenseValidSchema = require("./validation/expenseValid")
 
 const addExpense = async (req, res) => {
     try {
-        const { title, amount, category, date } = req.body;
+         const {error} = ExpenseValidSchema.validate(req.body, {abortEarly: false});
 
-        const expense = await Expense.create({
+         if (error) {
+            return res.status(400).json({ msg: error.details.map(d => d.message).join(", ") });
+         }
+
+         const expense = await Expense.create({
             user: req.auth._id,
-            title,
-            amount,
-            category,
-            date
+            title: req.body.title,
+            amount: req.body.amount,
+            category: req.body.category,
+            date: req.body.date || new Date(),
         });
 
         res.status(201).json({ msg: "Expense added successfully", expense });
@@ -37,38 +41,22 @@ const deleteExpense = async (req, res) => {
 };
 
 
-const getMonthlyExpenses = async (req, res) => {
-    try {
-        const month = parseInt(req.query.month) || new Date().getMonth() + 1; // 1-12
-        const year = parseInt(req.query.year) || new Date().getFullYear();
+ const getAllExpenses = async (req, res) => {
+  try {
+    const expenses = await Expense.find({ user: req.auth._id })
+      .sort({ date: -1 }); 
 
-        const expenses = await Expense.aggregate([
-            { $match: { user: req.auth._id } },
-            {
-                $project: {
-                    title: 1,
-                    amount: 1,
-                    category: 1,
-                    month: { $month: "$date" },
-                    year: { $year: "$date" },
-                },
-            },
-            { $match: { month, year } },
-            {
-                $group: {
-                    _id: null,
-                    totalExpenses: { $sum: "$amount" },
-                    details: { $push: "$$ROOT" },
-                },
-            },
-        ]);
+    const totalExpenses = expenses.reduce((acc, e) => acc + e.amount, 0);
 
-        const result = expenses[0] || { totalExpenses: 0, details: [] };
-
-        res.status(200).json(result);
-    } catch (error) {
-        res.status(500).json({ msg: error.message });
-    }
+    res.status(200).json({
+      totalExpenses,
+      details: expenses,
+    });
+  } catch (error) {
+    res.status(500).json({ msg: error.message });
+  }
 };
 
-module.exports = { addExpense, deleteExpense, getMonthlyExpenses };
+
+
+module.exports = { addExpense, deleteExpense, getAllExpenses};

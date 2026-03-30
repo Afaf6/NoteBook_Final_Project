@@ -46,8 +46,6 @@ app.use("/api/dashboard", DashboardRoute);
 const NotificationRoute = require("./routes/NotificationRoute");
 app.use("/api/notifications", NotificationRoute);
 
-
-
 const port = process.env.PORT || 5000;
 
 app.listen(port, () => {

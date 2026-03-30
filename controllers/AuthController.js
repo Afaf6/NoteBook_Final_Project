@@ -14,12 +14,6 @@ const registerAuth = async(req, res) => {
             });
         };
 
-        // if (!userName || !email || !password) {
-        //     return res.status(400).json({
-        //         msg: "Missing Data"
-        //     });
-        // };
-        
         const {userName, email, password} =req.body;
 
         const existUser = await Auth.findOne({email});

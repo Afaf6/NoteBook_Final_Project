@@ -1,6 +1,7 @@
-const {models} = require("mongoose");
+
 const Goals = require("../models/Goals");
 const goalValidSchema = require("./validation/goalsValid");
+const Notification = require("../models/Notification");
 
 const createGoals = async (req, res) => {
     try {
@@ -11,13 +12,6 @@ const createGoals = async (req, res) => {
             });
         };
 
-        
-
-        // if (!title || !targetValue || !currentValue) {
-        //     return res.status(400).json({
-        //         msg: "You Need To Add Your Goal"
-        //     });
-        // }
         
         const goal = await Goals.create({
             ...req.body,
@@ -79,6 +73,12 @@ const deleteGoals = async (req, res) => {
                 msg: "Goal not found"
             });
         }
+
+        await Notification.deleteMany({
+            user: req.auth._id,
+            type: "goal",
+            message: { $regex: goal.title, $options: "i" }
+        });
 
         res.status(200).json({
             msg: "Goal Delete"

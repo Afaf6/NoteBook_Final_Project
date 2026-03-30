@@ -10,8 +10,9 @@ const ExpenseValidSchema = Joi.object({
     .required(),
 
     category: Joi.string()
-    .valid("all","food", "transport", "healthy", "education", "entertainment", "shopping", "bills", "other")
-    .default("all"),
+    .valid("food", "transport", "health", "education", "entertainment", "shopping", "bills", "other")
+    .default("other"),
+
 
     date: Joi.date()
     .default(Date.now),
